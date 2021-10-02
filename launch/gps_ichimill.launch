@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <!-- f9p receiver -->
+  <node pkg="rosif" type="f9p_driver.py" name="f9p_driver" args="" >
+
+    <param name="port" value=""/>
+    <param name="baud" value="230400"/>
+
+    <param name="debug" value="True"/>
+  </node>
+
+  <!-- ichimill -->
+  <node pkg="rosif" type="ichimill_connect.py" name="ichimill_connect" args="" output="screen" >
+
+    <param name="username" value=""/>
+    <param name="password" value=""/>
+    <param name="port" value="2101"/>
+
+    <param name="host" value="ntrip.ales-corp.co.jp"/>
+    <param name="mountpoint" value="32M7NHS"/>
+
+    <param name="debug" value="True"/>
+  </node>
+
+  <!-- sentence to fix -->
+  <node pkg="nmea_navsat_driver" type="nmea_topic_driver" name="nmea_topic_driver" >
+  </node>
+</launch>

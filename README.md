@@ -10,6 +10,7 @@ ROS Melodic　<br>
 
 ## Setup
 
+### インストール
 ```
 $ cd ~/catkin_ws/src
 $ https://github.com/terakenxx/f9p_ichimill.git
@@ -18,8 +19,14 @@ $ sudo apt install ros-melodic-nmea-navsat-driver
 $ catkin build
 ```
 
-F9Pを接続しているシリアルポート名
-Ichimillユーザー名、Ichimillパスワード、ホストURL、マウントポイントを適宜編集
+### 環境設定
+
+```
+$ nano f9p_ichimill/launch/gps_ichimill.launch 
+```
+
+F9Pを接続しているシリアルポート名 <br>
+Ichimillユーザー名、Ichimillパスワード、ホストURL、マウントポイントを適宜編集 <br>
 
 ```
  <!-- f9p receiver -->
@@ -52,9 +59,10 @@ Ichimillユーザー名、Ichimillパスワード、ホストURL、マウント�
 $ roslaunch f9p_ichimill gps_ichimill.launch
 ```
 
-以下のようなエラーが出る場合
-[INFO] [1633851715.741557]: serial port Open...
-Could not open serial port: I/O error(13): could not open port /dev/ttyACM0: [Errno 13] Permission denied: '/dev/ttyACM0'
+以下のようなエラーが出る場合、次のコマンドを実行<br>
+[INFO] [1633851715.741557]: serial port Open... <br>
+Could not open serial port: I/O error(13): could not open port /dev/ttyACM0: [Errno 13] Permission denied: '/dev/ttyACM0' <br>
+
 ```
 $ sudo chmod 666 /dev/ttyACM0
 ```
@@ -63,7 +71,7 @@ RTKのLEDが点滅していれば、補正済み位置情報を取得出来て�
 ![DSC_0977b](https://user-images.githubusercontent.com/16064762/136687935-de46f6e8-35dd-4b2f-94f4-e90f6fcfe119.jpg)
 
 ## Authors
-MissingLink kenji.terasaka
+MissingLink kenji.terasaka <br>
 
 ## References
-参考にした情報源（サイト・論文）などの情報、リンク
+参考にした情報源（サイト・論文）などの情報、リンク <br>

@@ -1,23 +1,69 @@
 # f9p_ichimill
-このソフトはどんなもので、何ができるのかを書く
-合わせて、簡単なデモ（使用例）などスクリーンショットやGIFアニメで表示
-![rosgraph_f9p](https://user-images.githubusercontent.com/16064762/136682651-4b2e44d1-edb2-4dac-aec0-ae68ac4db0ef.png)
+シリアルポートに接続されたGPSレシーバF9Pで、Ichimillサービスと連携し補正済み位置情報を取得する。<br>
+
+![rosgraph_f9p_](https://user-images.githubusercontent.com/16064762/136687925-9b3c98f7-54e4-4dc8-8176-0805cb15f15a.png)
 
 ## Dependency
-使用言語とバージョン、必要なライブラリとそのバージョンを書く
-Pythonならrequirements.txtを用意するのも良い
+Ubuntu 18.04  <br>
+ROS Melodic　<br>
+インターネット回線に接続出来ること。<br>
 
 ## Setup
-セットアップ方法を書く。用意するハードウェアとソフトウェアをセットアップするためのコマンドを記載する
+
+```
+$ cd ~/catkin_ws/src
+$ https://github.com/terakenxx/f9p_ichimill.git
+$ sudo apt install ros-melodic-nmea-navsat-driver
+
+$ catkin build
+```
+
+F9Pを接続しているシリアルポート名
+Ichimillユーザー名、Ichimillパスワード、ホストURL、マウントポイントを適宜編集
+
+```
+ <!-- f9p receiver -->
+  <node pkg="rosif" type="f9p_driver.py" name="f9p_driver" args="" >
+
+    <param name="port" value="(シリアルポート名)"/>
+    <param name="baud" value="230400"/>
+
+    <param name="debug" value="True"/>
+  </node>
+
+  <!-- ichimill -->
+  <node pkg="rosif" type="ichimill_connect.py" name="ichimill_connect" args="" output="screen" >
+
+    <param name="username" value="(ユーザー名)"/>
+    <param name="password" value="(パスワード)"/>
+    <param name="port" value="2101"/>
+
+    <param name="host" value="(ホストURL)"/>
+    <param name="mountpoint" value="(マウントポイント)"/>
+
+    <param name="debug" value="True"/>
+  </node>
+```
+
 
 ## Usage
-使い方。なるべく具体的に書く。サンプルも書く
 
-## License
-This software is released under the MIT License, see LICENSE.
+```
+$ roslaunch f9p_ichimill gps_ichimill.launch
+```
+
+以下のようなエラーが出る場合
+[INFO] [1633851715.741557]: serial port Open...
+Could not open serial port: I/O error(13): could not open port /dev/ttyACM0: [Errno 13] Permission denied: '/dev/ttyACM0'
+```
+$ sudo chmod 666 /dev/ttyACM0
+```
+
+RTKのLEDが点滅していれば、補正済み位置情報を取得出来ている <br>
+![DSC_0977b](https://user-images.githubusercontent.com/16064762/136687935-de46f6e8-35dd-4b2f-94f4-e90f6fcfe119.jpg)
 
 ## Authors
-作者を明示する。特に、他者が作成したコードを利用する場合は、そのコードのライセンスに従った上で、リポジトリのそれぞれのコードのオリジナルの作者が誰か分かるように明示する（私はそれが良いと思い自主的にしています）。
+MissingLink kenji.terasaka
 
 ## References
 参考にした情報源（サイト・論文）などの情報、リンク

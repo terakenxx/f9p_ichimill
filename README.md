@@ -59,19 +59,26 @@ Ichimillユーザー名、Ichimillパスワード、ホストURL、マウント�
 $ roslaunch f9p_ichimill gps_ichimill.launch
 ```
 
+### 動作確認
+
+RTKのLEDが点滅していれば、補正済み位置情報を取得出来ている <br>
+![DSC_0977b](https://user-images.githubusercontent.com/16064762/136687935-de46f6e8-35dd-4b2f-94f4-e90f6fcfe119.jpg)
+
+![echo_status](https://user-images.githubusercontent.com/16064762/137603400-681ad13b-2517-4651-b29d-e74ec0d5ea25.png)
+
+## Troubleshooting
 以下のようなエラーが出る場合、次のコマンドを実行<br>
-[INFO] [1633851715.741557]: serial port Open... <br>
-Could not open serial port: I/O error(13): could not open port /dev/ttyACM0: [Errno 13] Permission denied: '/dev/ttyACM0' <br>
+>[INFO] [1633851715.741557]: serial port Open... <br>
+>Could not open serial port: I/O error(13): could not open port /dev/ttyACM0: [Errno 13] Permission denied: '/dev/ttyACM0' <br>
 
 ```
 $ sudo chmod 666 /dev/ttyACM0
 ```
 
-RTKのLEDが点滅していれば、補正済み位置情報を取得出来ている <br>
-![DSC_0977b](https://user-images.githubusercontent.com/16064762/136687935-de46f6e8-35dd-4b2f-94f4-e90f6fcfe119.jpg)
-
 ## Authors
 MissingLink kenji.terasaka <br>
 
 ## References
-参考にした情報源（サイト・論文）などの情報、リンク <br>
+ http://wiki.ros.org/nmea_navsat_driver <br>
+ http://docs.ros.org/en/api/nmea_msgs/html/msg/Sentence.html <br>
+ https://ales-corp.co.jp/service-use/ <br>

@@ -3,10 +3,15 @@
 
 ![rosgraph_f9p_](https://user-images.githubusercontent.com/16064762/136687925-9b3c98f7-54e4-4dc8-8176-0805cb15f15a.png)
 
-## Dependency
-Ubuntu 18.04  <br>
-ROS Melodic　<br>
-インターネット回線に接続出来ること。<br>
+## 確認環境
+・PC
+  Ubuntu 18.04  <br>
+  ROS Melodic　<br>
+　インターネット回線に接続出来ること。<br>
+
+・C099-F9P application board <br>
+・GGB0710(2周波対応GNSSアンテナ)<br>
+
 
 ## Setup
 

@@ -19,33 +19,61 @@ tcpip = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 debug = rospy.get_param('~debug', False)
 
+username = rospy.get_param('~username', '')
+password = rospy.get_param('~password', '')
+port = rospy.get_param('~port', 2101)
+
+host_url = rospy.get_param('~host', "ntrip.ales-corp.co.jp")
+mountpoint = rospy.get_param('~mountpoint', "32M7NHS")
+
+mutex_server = False
+
 def cb_GGA(data):
 	global tcpip
 	global pub
 	global debug
+	global host_url
+	global mutex_server
 	sendData = data.sentence
 
+	if( sendData.split(',').count('') > 1 ):
+		# 必要なデータが欠けている
+		rospy.logwarn("Missing the necessary elements GGA sentence:" + sendData)
+		return
+
 	if debug:
-		print("Send  :" + sendData)
+		rospy.loginfo("Send ichimill server :" + sendData)
 
-	tcpip.send(sendData)
-	time.sleep(0.25) # 250 msec
+	if mutex_server:
+		# サーバ待ち状態なのでリクエストしない
+		return
 
-	rtk_datas = tcpip.recv(4096)
-	if debug:
-		print( "Ntrip receive:" + str(len(rtk_datas)) )
+	mutex_server = True
+	try:
+		tcpip.send(sendData)
+		sendTime = rospy.Time.now()
 
-	pub.publish(rtk_datas)
+		time.sleep(0.25) # 250 msec
+
+		rtk_datas = tcpip.recv(4096)
+		if debug:
+			rospy.loginfo( "Ntrip receive:" + str(len(rtk_datas)) )
+
+		responceDelay = (rospy.Time.now() - sendTime)
+		if  responceDelay > rospy.Duration(3.0):
+			#delaySec = float(responceDelay)
+			rospy.logwarn( "HostServer Responce 3.0Sec DelayOver! : " + str(responceDelay) + "nsec / host:" + host_url )
+
+		pub.publish(rtk_datas)
+
+	except Exception as ex:
+		rospy.logerr( "cb_GGA() error({0}): {1}".format(ex.errno, ex.strerror))
+	finally:
+		mutex_server = False
+
 
 # Main
 if __name__ == '__main__':
-	username = rospy.get_param('~username', '')
-	password = rospy.get_param('~password', '')
-	port = rospy.get_param('~port', 2101)
-
-	host_url = rospy.get_param('~host', "ntrip.ales-corp.co.jp")
-	mountpoint = rospy.get_param('~mountpoint', "32M7NHS")
-
 	pwd = base64.b64encode("{}:{}".format(username, password).encode('ascii')).decode('ascii')
 
 	header =\
@@ -69,9 +97,12 @@ if __name__ == '__main__':
 		else:
 			rospy.logerr("ServerResponseError!! : " + data)
 
+	except Exception as ex:
+		rospy.logerr( "ntrip connect error({0}): {1}".format(ex.errno, ex.strerror))
 	except rospy.ROSInterruptException:
 		pass
 	finally:
 		tcpip.close() # close tcpip
+		rospy.loginfo("ntrip caster disconnect")
 
 

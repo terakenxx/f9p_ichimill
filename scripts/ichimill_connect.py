@@ -57,16 +57,16 @@ def cb_GGA(data):
 
 		rtk_datas = tcpip.recv(4096)
 		if debug:
-			rospy.loginfo( "Ntrip receive:" + str(len(rtk_datas)) )
+			rospy.loginfo( "NTRIP data receive:" + str(len(rtk_datas)) )
 
 		responceDelay = (rospy.Time.now() - sendTime)
 		if  responceDelay > rospy.Duration(3.0):
-			rospy.logwarn( "NTripServer Responce　Delay 3.0Sec Over! : " + str(responceDelay) + "nsec / host:" + host_url )
+			rospy.logwarn( "NTRIP Caster Responce　Delay 3.0Sec Over! : " + str(responceDelay) + "nsec / host:" + host_url )
 
 		pub.publish(rtk_datas)
-		
+
 	except socket.timeout as ex:
-		rospy.logwarn( "NTripServer  timeout")
+		rospy.logwarn( "NTRIP Caster  timeout")
 	except Exception as ex:
 		rospy.logerr( "exception error : " + ex)
 	finally:
@@ -83,7 +83,7 @@ if __name__ == '__main__':
 
 
 	try:
-		rospy.loginfo("ntrip caster connecting...")
+		rospy.loginfo("NTRIP Caster connecting...")
 		tcpip.connect((host_url,int(port)))
 		rospy.loginfo("ok")
 
@@ -99,13 +99,13 @@ if __name__ == '__main__':
 			rospy.logerr("ServerResponseError!! : " + data)
 
 	except socket.error as ex:
-		rospy.logerr( "ntrip connect error({0}): {1}".format(ex.errno, ex.strerror))
+		rospy.logerr( "NTRIP Caster connect error({0}): {1}".format(ex.errno, ex.strerror))
 	except Exception as ex:
 		rospy.logerr( "exception error : " + ex)
 	except rospy.ROSInterruptException:
 		pass
 	finally:
 		tcpip.close() # close tcpip
-		rospy.loginfo("ntrip caster disconnect")
+		rospy.loginfo("NTRIP Caster disconnect")
 
 

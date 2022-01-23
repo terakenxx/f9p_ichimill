@@ -61,13 +61,14 @@ def cb_GGA(data):
 
 		responceDelay = (rospy.Time.now() - sendTime)
 		if  responceDelay > rospy.Duration(3.0):
-			#delaySec = float(responceDelay)
-			rospy.logwarn( "HostServer Responce 3.0Sec DelayOver! : " + str(responceDelay) + "nsec / host:" + host_url )
+			rospy.logwarn( "NTripServer Responce　Delay 3.0Sec Over! : " + str(responceDelay) + "nsec / host:" + host_url )
 
 		pub.publish(rtk_datas)
-
+		
+	except socket.timeout as ex:
+		rospy.logwarn( "NTripServer  timeout")
 	except Exception as ex:
-		rospy.logerr( "cb_GGA() error({0}): {1}".format(ex.errno, ex.strerror))
+		rospy.logerr( "exception error : " + ex)
 	finally:
 		mutex_server = False
 
@@ -97,8 +98,10 @@ if __name__ == '__main__':
 		else:
 			rospy.logerr("ServerResponseError!! : " + data)
 
-	except Exception as ex:
+	except socket.error as ex:
 		rospy.logerr( "ntrip connect error({0}): {1}".format(ex.errno, ex.strerror))
+	except Exception as ex:
+		rospy.logerr( "exception error : " + ex)
 	except rospy.ROSInterruptException:
 		pass
 	finally:

@@ -96,7 +96,7 @@ if __name__ == '__main__':
 			rospy.Subscriber("/nmea_gga", Sentence, cb_GGA)
 			rospy.spin()
 		else:
-			rospy.logerr("ServerResponseError!! : " + data)
+			rospy.logerr("Caster ResponseError!! : " + data)
 
 	except socket.error as ex:
 		rospy.logerr( "NTRIP Caster connect error({0}): {1}".format(ex.errno, ex.strerror))

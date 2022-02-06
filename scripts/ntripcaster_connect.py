@@ -20,11 +20,11 @@ tcpip = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 debug = rospy.get_param('~debug', False)
 
 username = rospy.get_param('~username', '')
-password = rospy.get_param('~password', '')
+password = rospy.get_param('~password', 'BETATEST')
 port = rospy.get_param('~port', 2101)
 
-host_url = rospy.get_param('~host', "ntrip.ales-corp.co.jp")
-mountpoint = rospy.get_param('~mountpoint', "32M7NHS")
+host_url = rospy.get_param('~host', "rtk2go.com")
+mountpoint = rospy.get_param('~mountpoint', "MIE_UNIV")
 
 CLIENT_ARGENT = "ros_ntripcaster_connect_kt"
 
@@ -52,7 +52,7 @@ def cb_GGA(data):
 
 	mutex_server = True
 	try:
-		tcpip.send(sendData)
+		#tcpip.send(sendData)
 		sendTime = rospy.Time.now()
 
 		time.sleep(0.25) # 250 msec
@@ -84,6 +84,8 @@ if __name__ == '__main__':
 		"User-Agent: " + CLIENT_ARGENT + "\r\n" + \
 		"Authorization: Basic {}\r\n".format(idpwd) + \
 		"\r\n"
+
+	# rospy.loginfo(header)
 
 
 	try:

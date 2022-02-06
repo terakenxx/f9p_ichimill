@@ -15,7 +15,7 @@ from std_msgs.msg import String
 rospy.init_node('ntripcaster_connect')
 
 pub = rospy.Publisher('/caster/rtcm_data', String, queue_size=10)
-tcpip = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+tcpip = None
 
 debug = rospy.get_param('~debug', False)
 
@@ -29,6 +29,7 @@ mountpoint = rospy.get_param('~mountpoint', "MIE_UNIV")
 CLIENT_ARGENT = "ros_ntripcaster_connect_kt"
 
 mutex_server = False
+socket_disconnect = True
 
 def cb_GGA(data):
 	global tcpip
@@ -36,6 +37,7 @@ def cb_GGA(data):
 	global debug
 	global host_url
 	global mutex_server
+	global socket_disconnect
 	sendData = data.sentence
 
 	if( sendData.split(',').count('') > 1 ):
@@ -43,12 +45,14 @@ def cb_GGA(data):
 		rospy.logwarn("Missing the necessary elements GGA sentence:" + sendData)
 		return
 
+	if mutex_server or socket_disconnect:
+		# サーバ待ち状態または、切断状態ならリクエストしない
+		if debug:
+			rospy.logwarn( "NTRIP Caster busy..")
+		return
+
 	if debug:
 		rospy.loginfo("Send NTRIP Caster :" + sendData)
-
-	if mutex_server:
-		# サーバ待ち状態なのでリクエストしない
-		return
 
 	mutex_server = True
 	try:
@@ -58,8 +62,15 @@ def cb_GGA(data):
 		time.sleep(0.25) # 250 msec
 
 		rtk_datas = tcpip.recv(4096)
+
 		if debug:
 			rospy.loginfo( "NTRIP data receive:" + str(len(rtk_datas)) )
+
+		if len(rtk_datas) <= 0:
+			# 切断検知
+			rospy.logwarn( "NTRIP Caster Disconnect!")
+			socket_disconnect = True
+			return
 
 		responceDelay = (rospy.Time.now() - sendTime)
 		if  responceDelay > rospy.Duration(3.0):
@@ -86,27 +97,42 @@ if __name__ == '__main__':
 		"\r\n"
 
 	# rospy.loginfo(header)
+	r = rospy.Rate( 1.0 ) # 1Hz
+
+	rospy.Subscriber("/nmea_gga", Sentence, cb_GGA)
 
 
 	try:
-		rospy.loginfo("NTRIP Caster connecting...")
-		tcpip.connect((host_url,int(port)))
-		rospy.loginfo("ok")
+		while not rospy.is_shutdown():
+			tcpip = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-		rospy.loginfo("Header sending...")
-		tcpip.send(header.encode('ascii'))
+			rospy.loginfo("NTRIP Caster connecting...")
+			tcpip.connect((host_url,int(port)))
+			rospy.loginfo("ok")
 
-		data = tcpip.recv(1024).decode('ascii')
-		print(data)
-		# ※2022.01.23 静大浜松のNTRIP Casterに接続した結果
-		# Caster ResponseError!! : HTTP/1.0 401 Unauthorized
-		response_header = data.strip()
-		if( response_header == "ICY 200 OK" or \
-			response_header == "HTTP/1.1 200 OK" ):
-			rospy.Subscriber("/nmea_gga", Sentence, cb_GGA)
-			rospy.spin()
-		else:
-			rospy.logerr("Caster ResponseError!! : " + data)
+			rospy.loginfo("Header sending...")
+			tcpip.send(header.encode('ascii'))
+
+			data = tcpip.recv(1024).decode('ascii')
+			print(data)
+			response_header = data.strip()
+			if( response_header == "ICY 200 OK" or \
+				response_header == "HTTP/1.1 200 OK" ):
+
+				socket_disconnect = False
+				# rospy.spin()
+				while not rospy.is_shutdown():
+					if socket_disconnect:
+						break
+					r.sleep()
+
+				if socket_disconnect:
+					# 切断状態ならば再接続
+					rospy.loginfo( "NTRIP Caster retry Connecting...")
+					continue
+			else:
+				rospy.logerr("Caster ResponseError!! : " + data)
+				break
 
 	except socket.error as ex:
 		rospy.logerr( "NTRIP Caster connect error({0}): {1}".format(ex.errno, ex.strerror))

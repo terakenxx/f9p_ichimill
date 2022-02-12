@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <!-- f9p receiver -->
+  <node pkg="f9p_ichimill" type="f9p_driver.py" name="f9p_driver" args="" respawn="true" respawn_delay="5">
+
+    <param name="port" value="/dev/serial/by-id/usb-u-blox_AG_-_www.u-blox.com_u-blox_GNSS_receiver-if00"/>
+    <param name="baud" value="230400"/>
+
+    <param name="debug" value="True"/>
+  </node>
+
+  <!-- ntrip caster -->
+    <node pkg="f9p_ichimill" type="ntripcaster_connect.py" name="ntripcaster_connect" args="" output="screen" >
+      <remap from="/caster/rtcm_data" to="/softbank/rtcm_data"/>
+
+      <param name="username" value=""/>
+      <param name="password" value="BETATEST"/>
+      <param name="port" value="2101"/>
+
+      <param name="host" value="rtk2go.com"/>
+      <param name="mountpoint" value="MIE_UNIV"/>
+
+      <param name="debug" value="True"/>
+    </node>
+
+  <!-- sentence to fix -->
+  <node pkg="nmea_navsat_driver" type="nmea_topic_driver" name="nmea_topic_driver"  respawn="true" respawn_delay="5">
+    <!--
+    <remap from="nmea_sentence" to="nmea_gga"/>
+    -->
+  </node>
+</launch>

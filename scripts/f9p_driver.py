@@ -58,7 +58,7 @@ if __name__ == '__main__':
 					try:
 						gps_str = gps_data.decode('ascii')
 						if debug:
-							print(gps_str)
+							rospy.loginfo(gps_str)
 					except UnicodeError:
 						pass
 					
@@ -97,11 +97,12 @@ if __name__ == '__main__':
 				rospy.sleep(0)
 
 		except serial.SerialException as ex:
-			print( "serial error({0}): {1}".format(ex.errno, ex.strerror))
+			rospy.logerr( "SerialException error({0}): {1}".format(ex.errno, ex.strerror))
 		except rospy.ROSInterruptException:
 			pass
 		finally:
 			GPS.close()  # Close GPS serial port
+			rospy.loginfo("serial port Closed.")
 
 	except serial.SerialException as ex:
-		print( "Could not open serial port: I/O error({0}): {1}".format(ex.errno, ex.strerror))
+		rospy.logerr( "SerialException port open error({0}): {1}".format(ex.errno, ex.strerror))

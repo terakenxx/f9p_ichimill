@@ -3,16 +3,16 @@
 <launch>
 
   <!-- f9p receiver -->
-  <node pkg="rosif" type="f9p_driver.py" name="f9p_driver" args="" >
+  <node pkg="f9p_ichimill" type="f9p_driver.py" name="f9p_driver" args="" >
 
-    <param name="port" value=""/>
+    <param name="port" value="/dev/ttyACM0"/>
     <param name="baud" value="230400"/>
 
     <param name="debug" value="True"/>
   </node>
 
   <!-- ichimill -->
-  <node pkg="rosif" type="ichimill_connect.py" name="ichimill_connect" args="" output="screen" >
+  <node pkg="f9p_ichimill" type="ichimill_connect.py" name="ichimill_connect" args="" output="screen" >
 
     <param name="username" value=""/>
     <param name="password" value=""/>

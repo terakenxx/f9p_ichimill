@@ -64,6 +64,13 @@ Ichimillユーザー名、Ichimillパスワード、ホストURL、マウント�
 $ roslaunch f9p_ichimill gps_ichimill.launch
 ```
 
+### csvファイルに出力
+f9p_ichimillフォルダに「fix_日付.csv」のファイル名で保存されます。
+
+```
+$ rosrun f9p_ichimill fix2csv.py
+```
+
 ### 動作確認
 
 RTKのLEDが点滅していれば、補正済み位置情報を取得出来ている <br>

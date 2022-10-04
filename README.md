@@ -1,7 +1,12 @@
 # f9p_ichimill
-シリアルポートに接続されたGPSレシーバF9Pで、Ichimillサービスと連携し補正済み位置情報を取得する。<br>
+
+シリアルポートに接続されたGPSレシーバF9Pで、ichimillサービスと連携し補正済み位置情報を取得する。<br>
 
 ![rosgraph_f9p_](https://user-images.githubusercontent.com/16064762/136687925-9b3c98f7-54e4-4dc8-8176-0805cb15f15a.png)
+
+
+または、善意の基準局等　公開されたNtripCasterのデータを使い補正済み位置情報を取得する。<br>
+
 
 ## 確認環境
 ・PC
@@ -26,12 +31,14 @@ $ catkin build
 
 ### 環境設定
 
+#### ichimillサービスへ接続する場合
+
 ```
 $ nano f9p_ichimill/launch/gps_ichimill.launch 
 ```
 
 F9Pを接続しているシリアルポート名 <br>
-Ichimillユーザー名、Ichimillパスワード、ホストURL、マウントポイントを適宜編集 <br>
+ichimillユーザー名、ichimillパスワード、ホストURL、マウントポイントを適宜編集 <br>
 
 ```
  <!-- f9p receiver -->
@@ -57,14 +64,54 @@ Ichimillユーザー名、Ichimillパスワード、ホストURL、マウント�
   </node>
 ```
 
+#### 善意の基準局等、公開Ntrip casterへ接続する場合
 
-## Usage
+```
+$ nano f9p_ichimill/launch/gps_ntripcaster.launch 
+```
+
+```
+  <!-- f9p receiver -->
+  <node pkg="f9p_ichimill" type="f9p_driver.py" name="f9p_driver" args="" respawn="true" respawn_delay="5">
+
+    <param name="port" value="(シリアルポート名)"/>
+    <param name="baud" value="230400"/>
+
+    <param name="debug" value="True"/>
+  </node>
+
+  <!-- ntrip caster -->
+    <node pkg="f9p_ichimill" type="ntripcaster_connect.py" name="ntripcaster_connect" args="" output="screen" >
+      <remap from="/caster/rtcm_data" to="/softbank/rtcm_data"/>
+
+      <param name="username" value="(ユーザー名)"/>
+      <param name="password" value="(パスワード)"/>
+      <param name="port" value="2101"/>
+
+      <param name="host" value="(ホストURL)"/>
+      <param name="mountpoint" value="(マウントポイント)"/>
+
+      <param name="debug" value="True"/>
+    </node>
+```
+
+
+## 使い方
+
+#### ichimillサービスへ接続する場合
 
 ```
 $ roslaunch f9p_ichimill gps_ichimill.launch
 ```
 
-### csvファイルに出力
+#### 善意の基準局等、公開Ntrip casterへ接続する場合
+
+```
+$ roslaunch f9p_ichimill gps_ntripcaster.launch
+```
+
+
+### /fixトピック、csvファイルに出力
 f9p_ichimillフォルダに「fix_日付.csv」のファイル名で保存されます。
 
 ```
@@ -87,6 +134,13 @@ RTKのLEDが点滅していれば、補正済み位置情報を取得出来て�
 $ sudo chmod 666 /dev/ttyACM0
 ```
 
+## 最後に
+質問、バグレポートありましたら、Issuesへお気軽に書き込んでください。
+
+つくばチャレンジ、中之島ロボットチャンレンジ参加者の皆さん
+現地でも気軽にお声がけください。
+
+
 ## Authors
 MissingLink kenji.terasaka <br>
 
@@ -94,3 +148,6 @@ MissingLink kenji.terasaka <br>
  http://wiki.ros.org/nmea_navsat_driver <br>
  http://docs.ros.org/en/api/nmea_msgs/html/msg/Sentence.html <br>
  https://ales-corp.co.jp/service-use/ <br>
+
+# License
+The source code is licensed MIT. The website content is licensed CC BY 4.0,see LICENSE.

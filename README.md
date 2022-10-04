@@ -112,11 +112,12 @@ $ roslaunch f9p_ichimill gps_ntripcaster.launch
 
 
 ### /fixトピック、csvファイルに出力
-f9p_ichimillフォルダに「fix_日付.csv」のファイル名で保存されます。
 
 ```
 $ rosrun f9p_ichimill fix2csv.py
 ```
+
+f9p_ichimillフォルダに「fix_日付.csv」のファイル名で保存されます。
 
 ### 動作確認
 

@@ -23,7 +23,7 @@
 ### インストール
 ```
 $ cd ~/catkin_ws/src
-$ https://github.com/terakenxx/f9p_ichimill.git
+$ git clone https://github.com/terakenxx/f9p_ichimill.git
 $ sudo apt install ros-melodic-nmea-navsat-driver
 
 $ catkin build

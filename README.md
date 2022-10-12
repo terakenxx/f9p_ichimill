@@ -10,13 +10,13 @@
 
 ## 確認環境
 ・PC
-  Ubuntu 18.04  <br>
-  ROS Melodic　<br>
+  Ubuntu 18.04 / ROS Melodic　<br>
 　インターネット回線に接続出来ること。<br>
 
 ・C099-F9P application board <br>
 ・GGB0710(2周波対応GNSSアンテナ)<br>
 
+※Ubuntu 20.04 / ROS Noetic対応進行中 <br>
 
 ## Setup
 

@@ -50,7 +50,7 @@ def cb_GGA(data):
 
 	mutex_server = True
 	try:
-		tcpip.send(sendData)
+		tcpip.send(str(sendData).encode())
 		sendTime = rospy.Time.now()
 
 		time.sleep(0.25) # 250 msec
@@ -63,7 +63,8 @@ def cb_GGA(data):
 		if  responceDelay > rospy.Duration(3.0):
 			rospy.logwarn( "NTRIP Caster Responce　Delay 3.0Sec Over! : " + str(responceDelay) + "nsec / host:" + host_url )
 
-		pub.publish(rtk_datas)
+		rtkStr = base64.b64encode(rtk_datas).decode()
+		pub.publish(rtkStr)
 
 	except socket.timeout as ex:
 		rospy.logwarn( "NTRIP Caster  timeout")

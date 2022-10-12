@@ -68,7 +68,9 @@ if __name__ == '__main__':
 							ggaString = gps_str.replace('$GNGGA', 'GPGGA')
 							ggaString = ggaString[:-3]
 							checksum = calcultateCheckSum(ggaString)
-							sendData = bytes(("$%s*%s\r\n" % (ggaString, checksum)).encode('ascii'))
+							#sendGngga = "$" + ggaString + "*" + checksum + "\r\n"
+							#sendData = str(sendGngga)
+							sendData = "$%s*%s\r\n" % (ggaString, checksum)
 						else:
 							sendData = gps_str
 
@@ -90,7 +92,7 @@ if __name__ == '__main__':
 				
 				# nstrip casterからのデータを受信していれば、レシーバーに送信 
 				if len(rtcmData) > 0:
-					GPS.write(rtcmData)
+					GPS.write(base64.b64decode(rtcmData.encode()))
 					rtcmData = ""
 				
 				#rospy.Rate(10).sleep()

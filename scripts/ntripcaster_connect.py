@@ -98,7 +98,8 @@ if __name__ == '__main__':
 					if debug:
 						rospy.loginfo( "NTRIP data receive:" + str(len(rtk_datas)) )
 
-					pub.publish(rtk_datas)
+					#print(base64.b64encode(rtk_datas))
+					pub.publish(base64.b64encode(rtk_datas))
 					rtk_datas = b''
 
 				except socket.timeout as ex:

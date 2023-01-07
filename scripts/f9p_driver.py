@@ -92,7 +92,7 @@ if __name__ == '__main__':
 				
 				# nstrip casterからのデータを受信していれば、レシーバーに送信 
 				if len(rtcmData) > 0:
-					GPS.write(base64.b64decode(rtcmData.encode()))
+					GPS.write(base64.b64decode(rtcmData))					
 					rtcmData = ""
 				
 				#rospy.Rate(10).sleep()

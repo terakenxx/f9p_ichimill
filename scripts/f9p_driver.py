@@ -26,8 +26,8 @@ serial_baud = rospy.get_param('~baud', 230400)
 
 debug = rospy.get_param('~debug', False)
 
-seqGGA = 0
-pubGGA = rospy.Publisher('nmea_gga', Sentence, queue_size=60)
+seqGpGGA = 0
+pubGpGGA = rospy.Publisher('nmea_gga', Sentence, queue_size=60)
 seqNmeaSeq = 0
 pubNmea = rospy.Publisher('nmea_sentence', Sentence, queue_size=60)
 
@@ -65,22 +65,20 @@ if __name__ == '__main__':
 					# GGA Sentence publish
 					if "GGA" in gps_str:
 						if "$GNGGA" in gps_str:
-							ggaString = gps_str.replace('$GNGGA', 'GPGGA')
-							ggaString = ggaString[:-3]
-							checksum = calcultateCheckSum(ggaString)
+							gpggaString = gps_str.replace('$GNGGA', 'GPGGA')
+							gpggaString = gpggaString[:-3]
+							checksum = calcultateCheckSum(gpggaString)
 							#sendGngga = "$" + ggaString + "*" + checksum + "\r\n"
 							#sendData = str(sendGngga)
-							sendData = "$%s*%s\r\n" % (ggaString, checksum)
-						else:
-							sendData = gps_str
+							send_gpggaData = "$%s*%s\r\n" % (gpggaString, checksum)
 
-						ggaSentence = Sentence()
-						ggaSentence.header.stamp = rospy.get_rostime()
-						ggaSentence.header.frame_id = 'gps'
-						ggaSentence.header.seq = seqGGA
-						ggaSentence.sentence = sendData
-						pubGGA.publish(ggaSentence)
-						seqGGA = seqGGA + 1
+							gpggaSentence = Sentence()
+							gpggaSentence.header.stamp = rospy.get_rostime()
+							gpggaSentence.header.frame_id = 'gps'
+							gpggaSentence.header.seq = seqGpGGA
+							gpggaSentence.sentence = send_gpggaData
+							pubGpGGA.publish(gpggaSentence)
+							seqGpGGA = seqGpGGA + 1
 
 						ggaSentence = Sentence()
 						ggaSentence.header.stamp = rospy.get_rostime()

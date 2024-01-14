@@ -151,8 +151,8 @@ MissingLink kenji.terasaka <br>
  https://ales-corp.co.jp/service-use/ <br>
 
 # License
-The source code is licensed MIT. The website content is licensed CC BY 4.0,see LICENSE.
-
-ソフトバンク株式会社様 /ALES  株式会社様より提供されている次の RTK  補正データ配信サービスを使用させて頂きました。
-・ SB  サービス名  :  高精度測位サービス  ichimill( イチミル )
-・ ALES  サービス名  :  センチメートル級測位サービス
+The source code is licensed MIT. The website content is licensed CC BY 4.0,see LICENSE.<br>
+<br>
+ソフトバンク株式会社様 /ALES  株式会社様より提供されている次の RTK  補正データ配信サービスを使用させて頂きました。<br>
+・ SB  サービス名  :  高精度測位サービス  ichimill( イチミル )<br>
+・ ALES  サービス名  :  センチメートル級測位サービス<br>
